@@ -27,7 +27,7 @@
 #define IMU_TIMEOUT_MS 500                                                  // When there was a failure in talking to the IMU (or no data ready), how many milliseconds should we wait?
 #define FUSION_UPDATES_PER_SECOND 50.0f                                     // Rate to update the fusion algorithm
 #define FUSION_UPDATE_DELTA_US static_cast<unsigned long>(1000000.0f / FUSION_UPDATES_PER_SECOND)        // How many milliseconds need to pass before the fusion algoirthm is sent an update
-#define SERIAL_PRECISION 12                                                 // How many digits of the float to print to Serial
+#define SERIAL_PRECISION 6                                                  // How many digits of the float to print to Serial
 #define SERIAL_NUM_UPDATES_PER_SECOND 20                                    // How many times per second to send an update
 #define SERIAL_UPDATE_DELTA_MS (1000 / SERIAL_NUM_UPDATES_PER_SECOND)       // How many milliseoncds to wait until to update the orientation on the serial connection
 #define RESET_ORIENTATION_PIN 7                                             // Pin that is read, when `HIGH`, will set the `orientation_offset` HRP, so that the effective orientation points forward
