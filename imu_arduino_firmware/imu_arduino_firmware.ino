@@ -190,8 +190,8 @@ void loop() {
     if (digitalRead(RESET_ORIENTATION_PIN) == HIGH) {
         // Simply set the offset to be that of what the orientation is currently
         orientation_offset.heading = filter.getYaw();
-        orientation_offset.pitch   = filter.getRoll();          // Pitch & Roll are swapped,
-        orientation_offset.roll    = filter.getPitch();
+        orientation_offset.pitch   = filter.getPitch();
+        orientation_offset.roll    = filter.getRoll();
     }
 
     // If enough time has passed, update the fusion state
@@ -209,8 +209,8 @@ void loop() {
 
         // Read data
         orientation.heading = filter.getYaw()   - orientation_offset.heading;
-        orientation.pitch   = filter.getRoll() - orientation_offset.pitch;
-        orientation.roll    = filter.getPitch()  - orientation_offset.roll;
+        orientation.pitch   = filter.getPitch() - orientation_offset.pitch;
+        orientation.roll    = filter.getRoll()  - orientation_offset.roll;
     }
 
     // If enough time has passed, send an update of the orientation over the serial connection
