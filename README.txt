@@ -3,6 +3,12 @@ going to use to pursue a patent.  As for right now, this project's goal is to
 simply visualize the orientation of the chip on the SparkFun breakout board,
 using Panda3D (Python 3) and Arduino.
 
+Two git submodules are included.  They are 3rd party code and are included mostly
+a reference.  The Madgwick algorithm is used for sensor fusion.  As for the SparkFun
+ICM-20948 code, it is required to be installed in the ArduinoIDE.  See below for
+instructions.
+
+
 Setup:
  1. Install Arduion IDE (v1.8.13 was used for development)
  2. In the Arduino IDE, install SparkFun's ICM 20948 library
@@ -35,3 +41,9 @@ E.g. on Linux:
 
 And then should see a 3D model of the breakbout board, who's orientation should match
 that of the connect Arduino/IMU.
+
+
+
+TODO:
+ - [ ] Change this to a .md (or .rst) with a photo showing this in action
+
