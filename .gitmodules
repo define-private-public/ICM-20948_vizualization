@@ -1,3 +1,6 @@
 [submodule "MadgwickAHRS"]
 	path = MadgwickAHRS
 	url = https://github.com/arduino-libraries/MadgwickAHRS
+[submodule "SparkFun_ICM-20948_ArduinoLibrary"]
+	path = SparkFun_ICM-20948_ArduinoLibrary
+	url = https://github.com/sparkfun/SparkFun_ICM-20948_ArduinoLibrary
