@@ -1,0 +1,3 @@
+[submodule "MadgwickAHRS"]
+	path = MadgwickAHRS
+	url = https://github.com/arduino-libraries/MadgwickAHRS
