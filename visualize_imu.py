@@ -3,7 +3,8 @@
 import sys
 from serial import Serial
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import AmbientLight
+from direct.gui.OnscreenText import OnscreenText
+from panda3d.core import AmbientLight, TextNode
 
 
 class VisualizeIMU(ShowBase):
@@ -14,6 +15,9 @@ class VisualizeIMU(ShowBase):
         '_heading',
         '_pitch',
         '_roll',
+        '_h_text',
+        '_p_text',
+        '_r_text',
     )
 
     def __init__(self, port):
@@ -30,10 +34,17 @@ class VisualizeIMU(ShowBase):
         # load up the IMU model and set it to spin
         self._imu_model = self.loader.loadModel('imu_breakout.bam')
         self._imu_model.reparentTo(self.render)
-        self.taskMgr.add(self._spin_imu_task, 'spin_imu')
+        self.taskMgr.add(self._read_imu_data, 'read_imu')
         self._heading = 0.0
         self._pitch = 0.0
         self._roll = 0.0
+
+        # Set some debugging text
+        x = 0.95
+        y = 0.7
+        self._h_text = OnscreenText(text='H: ###.#°', align=TextNode.ALeft, pos=(x, y + 0.14))
+        self._p_text = OnscreenText(text='P: ###.#°', align=TextNode.ALeft, pos=(x, y + 0.07))
+        self._r_text = OnscreenText(text='R: ###.#°', align=TextNode.ALeft, pos=(x, y))
 
         # Set an ambient light so things aren't so harsh
         self._light = AmbientLight('light')
@@ -46,8 +57,8 @@ class VisualizeIMU(ShowBase):
         self.exitFunc = self._cleanup_serial
 
 
-    # Small code to rotate the model about the Z axis
-    def _spin_imu_task(self, task):
+    # Small code to read data from the IMU over Serial
+    def _read_imu_data(self, task):
         try:
             # Read data in from the serial port and have it control orientation
             line = self._serial.readline().decode('utf-8').strip()
@@ -67,12 +78,20 @@ class VisualizeIMU(ShowBase):
                         self._pitch,
                         self._roll
                     )
+
+                    self._update_text()
         except:
             # Ignore all errors
             pass
 
         # Always continue on
         return task.cont
+
+    # Updates the onscreen text
+    def _update_text(self):
+        self._h_text.setText('H: {:.1f}°'.format(self._heading))
+        self._p_text.setText('P: {:.1f}°'.format(self._pitch))
+        self._r_text.setText('R: {:.1f}°'.format(self._roll))
 
 
     # Make sure on window close we gracefully cleanup the serial connection
