@@ -180,10 +180,9 @@ void loop() {
         gy = imu.gyrY();
         gz = imu.gyrZ();
 
-        // Some of the magnometer's axis need to be flipped to match that of the gyro/accel for Madgwick to work
-        mx =  imu.magX();
-        my = -imu.magY();
-        mz = -imu.magZ();
+        mx = imu.magX();
+        my = imu.magY();
+        mz = imu.magZ();
     }
 
     // Check if the "reset orientation" pin has been pressed
@@ -201,10 +200,12 @@ void loop() {
         prev_fusion_update_us = current_us;
 
         // Update the sensor fusion state
+        //   - The axis of the Accel/Gyro vs. the magnometer aren't the same, so they need to be flipped to match
+        //   - I think that the MadgwickAHRS is using a different axis, so that's why X & Y are swapped
         filter.update(
-            gx, gy, gz,
-            ax, ay, az,
-            mx, my, mz
+             gy, gx,  gz,
+             ay, ax,  az,
+            -my, mx, -mz
         );
 
         // Read data
