@@ -1,0 +1,5 @@
+panda3d==1.10.9
+panda3d-blend2bam==0.18
+panda3d-gltf==0.12
+panda3d-simplepbr==0.7
+pyserial==3.5
