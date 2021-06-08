@@ -203,9 +203,9 @@ void loop() {
         //   - The axis of the Accel/Gyro vs. the magnometer aren't the same, so they need to be flipped to match
         //   - I think that the MadgwickAHRS is using a different axis, so that's why X & Y are swapped
         filter.update(
-             gy, gx,  gz,
-             ay, ax,  az,
-            -my, mx, -mz
+             gy, gx, gz,
+             ay, ax, az,
+             mx, -my, -mz
         );
 
         // Read data
