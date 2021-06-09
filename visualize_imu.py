@@ -1,10 +1,34 @@
 #!/bin/env python3
 
 import sys
+from math import sin, cos, radians
 from serial import Serial
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
-from panda3d.core import AmbientLight, TextNode
+from panda3d.core import AmbientLight, TextNode, LQuaternionf
+
+
+# Convert an HPR orientation to a quaternion.  code adapted from
+#   https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code
+#
+#   arguments should be floats (in degrees)
+#   Returns the Panda3d LQuaternionf
+def hpr_to_quat(heading, pitch, roll):
+    # Abbreviations for the various angular functions
+    cy = cos(radians(heading) * 0.5)
+    sy = sin(radians(heading) * 0.5)
+    cp = cos(radians(pitch) * 0.5)
+    sp = sin(radians(pitch) * 0.5)
+    cr = cos(radians(roll) * 0.5)
+    sr = sin(radians(roll) * 0.5)
+
+    return LQuaternionf(
+        cr * cp * cy + sr * sp * sy,
+        sr * cp * cy - cr * sp * sy,
+        cr * sp * cy + sr * cp * sy,
+        cr * cp * sy - sr * sp * cy
+    )
+
 
 
 class VisualizeIMU(ShowBase):
@@ -18,6 +42,7 @@ class VisualizeIMU(ShowBase):
         '_h_text',
         '_p_text',
         '_r_text',
+        '_orientation_quaternion',
     )
 
     def __init__(self, port):
@@ -38,6 +63,7 @@ class VisualizeIMU(ShowBase):
         self._heading = 0.0
         self._pitch = 0.0
         self._roll = 0.0
+        self._orientation_quaternion = LQuaternionf()
 
         # Set some debugging text
         x = 0.95
@@ -73,11 +99,13 @@ class VisualizeIMU(ShowBase):
                     self._roll = float(parts[3])
 
                     # Have the model orientation match our hardware
-                    self._imu_model.setHpr(
-                        self._heading,
-                        self._pitch,
-                        self._roll
-                    )
+                    self._orientation_quaternion = hpr_to_quat(self._heading, self._pitch, self._roll)
+                    self._imu_model.setQuat(self._orientation_quaternion)
+#                    self._imu_model.setHpr(
+#                        self._heading,
+#                        self._pitch,
+#                        self._roll
+#                    )
 
                     self._update_text()
         except:
@@ -92,7 +120,6 @@ class VisualizeIMU(ShowBase):
         self._h_text.setText('H: {:.1f}°'.format(self._heading))
         self._p_text.setText('P: {:.1f}°'.format(self._pitch))
         self._r_text.setText('R: {:.1f}°'.format(self._roll))
-
 
     # Make sure on window close we gracefully cleanup the serial connection
     def _cleanup_serial(self):
